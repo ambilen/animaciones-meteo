@@ -1,0 +1,72 @@
+---
+layout: null
+---
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Animaciones meteorológicas</title>
+
+    <style>
+        body {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            font-family: Arial, sans-serif;
+            color: #222;
+        }
+
+        ul {
+            padding: 0;
+            list-style: none;
+        }
+
+        li {
+            margin-bottom: 14px;
+        }
+
+        a {
+            color: #0969da;
+            font-size: 1.1rem;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Animaciones meteorológicas</h1>
+
+    <ul>
+        {% assign folder_pages = site.pages | sort: "dir" %}
+        {% assign folders_found = false %}
+
+        {% for folder_page in folder_pages %}
+            {% if folder_page.name == "index.html" and folder_page.dir != "/" %}
+                {% assign folders_found = true %}
+
+                <li>
+                    <a href="{{ folder_page.url | relative_url }}">
+                        {{ folder_page.dir
+                            | remove_first: "/"
+                            | remove: "/"
+                            | replace: "_", " "
+                            | replace: "-", " "
+                        }}
+                    </a>
+                </li>
+            {% endif %}
+        {% endfor %}
+
+        {% unless folders_found %}
+            <li>No hay carpetas disponibles.</li>
+        {% endunless %}
+    </ul>
+</body>
+</html>
