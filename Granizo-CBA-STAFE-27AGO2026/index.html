@@ -48,7 +48,7 @@ layout: null
         {% assign animations_found = false %}
 
         {% for file in animation_files %}
-            {% if file.path contains "/Granizo-CBA-STAFE-27AGO2026/" and file.extname == ".html" %}                {% assign animations_found = true %}
+            {% if file.path contains page.dir and file.extname == ".html" %}               {% assign animations_found = true %}
 
                 <li>
                     <a href="{{ file.path | relative_url }}">
