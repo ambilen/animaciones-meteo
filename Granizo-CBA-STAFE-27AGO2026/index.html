@@ -1,10 +1,14 @@
+---
+layout: null
+---
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Animaciones de Granizo-CBA-STAFE-27AGO2026</title>
+    <title>Animaciones meteorológicas</title>
 
     <style>
         body {
@@ -13,10 +17,6 @@
             padding: 0 20px;
             font-family: Arial, sans-serif;
             color: #222;
-        }
-
-        h1 {
-            margin-bottom: 30px;
         }
 
         ul {
@@ -37,83 +37,34 @@
         a:hover {
             text-decoration: underline;
         }
-
-        #status {
-            color: #666;
-        }
     </style>
 </head>
 
 <body>
     <h1>Animaciones meteorológicas</h1>
 
-    <p id="status">Cargando animaciones…</p>
+    <ul>
+        {% assign animation_files = site.static_files | sort: "name" %}
+        {% assign animations_found = false %}
 
-    <ul id="animation-list"></ul>
+        {% for file in animation_files %}
+            {% if file.path contains "/Granizo-CBA-STAFE-27AGO2026/" and file.extname == ".html" %}                {% assign animations_found = true %}
 
-    <script>
-        const repositoryAPI =
-            "https://api.github.com/repos/ambilen/animaciones-meteo/contents/animations";
+                <li>
+                    <a href="{{ file.path | relative_url }}">
+                        {{ file.name
+                            | remove: ".html"
+                            | replace: "_", " "
+                            | replace: "-", " "
+                        }}
+                    </a>
+                </li>
+            {% endif %}
+        {% endfor %}
 
-        const statusElement =
-            document.getElementById("status");
-
-        const listElement =
-            document.getElementById("animation-list");
-
-        fetch(repositoryAPI)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("No se pudo consultar el repositorio.");
-                }
-
-                return response.json();
-            })
-            .then(files => {
-                const animations = files
-                    .filter(file =>
-                        file.type === "file" &&
-                        file.name.toLowerCase().endsWith(".html") &&
-                        file.name.toLowerCase() !== "index.html"
-                    )
-                    .sort((a, b) =>
-                        a.name.localeCompare(b.name)
-                    );
-
-                statusElement.remove();
-
-                if (animations.length === 0) {
-                    listElement.innerHTML =
-                        "<li>No hay animaciones disponibles.</li>";
-
-                    return;
-                }
-
-                animations.forEach(file => {
-                    const item =
-                        document.createElement("li");
-
-                    const link =
-                        document.createElement("a");
-
-                    link.href =
-                        encodeURIComponent(file.name);
-
-                    link.textContent =
-                        file.name
-                            .replace(/\.html$/i, "")
-                            .replace(/[_-]+/g, " ");
-
-                    item.appendChild(link);
-                    listElement.appendChild(item);
-                });
-            })
-            .catch(error => {
-                statusElement.textContent =
-                    "No se pudo cargar la lista de animaciones.";
-
-                console.error(error);
-            });
-    </script>
+        {% unless animations_found %}
+            <li>No hay animaciones disponibles.</li>
+        {% endunless %}
+    </ul>
 </body>
 </html>
